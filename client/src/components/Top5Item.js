@@ -41,6 +41,10 @@ function Top5Item(props) {
         store.addMoveItemTransaction(sourceId, targetId);
     }
 
+    function handleEditItem() {
+        console.log("Works");
+    } 
+
     let { index } = props;
     let itemClass = "top5-item";
     if (draggedTo) {
@@ -61,6 +65,7 @@ function Top5Item(props) {
                 type="button"
                 id={"edit-item-" + index + 1}
                 className="list-card-button"
+                onClick={handleEditItem}
                 value={"\u270E"}
             />
             {props.text}
