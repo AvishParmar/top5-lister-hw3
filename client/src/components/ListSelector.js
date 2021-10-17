@@ -13,7 +13,10 @@ const ListSelector = () => {
     store.history = useHistory();
     
     function handleAdd(){
-        store.addNewList();
+        if(!store.isListNameEditActive){
+            store.addNewList();
+        }
+        
     }
     useEffect(() => {
         store.loadIdNamePairs();
@@ -37,6 +40,7 @@ const ListSelector = () => {
                     id="add-list-button"
                     className="top5-button"
                     value="+" 
+                    style={(store.isListNameEditActive) ? {opacity: 0.5, cursor: "not-allowed"} : {}}
                     onClick={handleAdd}/>
                 Your Lists
             </div>

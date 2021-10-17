@@ -37,7 +37,9 @@ export const useGlobalStore = () => {
         newListCounter: 0,
         listNameActive: false,
         itemActive: false,
-        listMarkedForDeletion: null
+        listMarkedForDeletion: null,
+        canUndo: tps.hasTransactionToUndo(),
+        canRedo: tps.hasTransactionToRedo(),
     });
 
     // HERE'S THE DATA STORE'S REDUCER, IT MUST
@@ -53,7 +55,10 @@ export const useGlobalStore = () => {
                     newListCounter: store.newListCounter,
                     isListNameEditActive: false,
                     isItemEditActive: false,
-                    listMarkedForDeletion: store.listMarkedForDeletion
+                    listMarkedForDeletion: store.listMarkedForDeletion,
+                    canUndo: tps.hasTransactionToUndo(),
+                    canRedo: tps.hasTransactionToRedo(),
+                    
                 });
             }
             // STOP EDITING THE CURRENT LIST
@@ -64,7 +69,9 @@ export const useGlobalStore = () => {
                     newListCounter: store.newListCounter,
                     isListNameEditActive: false,
                     isItemEditActive: false,
-                    listMarkedForDeletion: store.listMarkedForDeletion
+                    listMarkedForDeletion: store.listMarkedForDeletion,
+                    canUndo: tps.hasTransactionToUndo(),
+                    canRedo: tps.hasTransactionToRedo(),
                 });
             }
             // GET ALL THE LISTS SO WE CAN PRESENT THEM
@@ -75,7 +82,9 @@ export const useGlobalStore = () => {
                     newListCounter: store.newListCounter,
                     isListNameEditActive: false,
                     isItemEditActive: false,
-                    listMarkedForDeletion: store.listMarkedForDeletion
+                    listMarkedForDeletion: store.listMarkedForDeletion,
+                    canUndo: tps.hasTransactionToUndo(),
+                    canRedo: tps.hasTransactionToRedo(),
                 });
             }
             // UPDATE A LIST
@@ -86,7 +95,9 @@ export const useGlobalStore = () => {
                     newListCounter: store.newListCounter,
                     isListNameEditActive: false,
                     isItemEditActive: false,
-                    listMarkedForDeletion: store.listMarkedForDeletion
+                    listMarkedForDeletion: store.listMarkedForDeletion,
+                    canUndo: tps.hasTransactionToUndo(),
+                    canRedo: tps.hasTransactionToRedo(),
                 });
             }
             // START EDITING A LIST NAME
@@ -97,7 +108,9 @@ export const useGlobalStore = () => {
                     newListCounter: store.newListCounter,
                     isListNameEditActive: true,
                     isItemEditActive: false,
-                    listMarkedForDeletion: store.listMarkedForDeletion
+                    listMarkedForDeletion: store.listMarkedForDeletion,
+                    canUndo: tps.hasTransactionToUndo(),
+                    canRedo: tps.hasTransactionToRedo(),
                 });
             }
             case GlobalStoreActionType.SET_ITEM_EDIT_ACTIVE: {
@@ -107,7 +120,9 @@ export const useGlobalStore = () => {
                     newListCounter: store.newListCounter,
                     isListNameEditActive: false,
                     isItemEditActive: true,
-                    listMarkedForDeletion: store.listMarkedForDeletion
+                    listMarkedForDeletion: store.listMarkedForDeletion,
+                    canUndo: tps.hasTransactionToUndo(),
+                    canRedo: tps.hasTransactionToRedo(),
                 });
             }
 
@@ -119,7 +134,9 @@ export const useGlobalStore = () => {
                     newListCounter: store.newListCounter,
                     isListNameEditActive: false,
                     isItemEditActive: false,
-                    listMarkedForDeletion: payload
+                    listMarkedForDeletion: payload,
+                    canUndo: tps.hasTransactionToUndo(),
+                    canRedo: tps.hasTransactionToRedo(),
                 });
             }
             case GlobalStoreActionType.ADD_NEW_LIST: {
@@ -129,7 +146,9 @@ export const useGlobalStore = () => {
                     newListCounter: payload.newKey,
                     isListNameEditActive: true,
                     isItemEditActive: false,
-                    listMarkedForDeletion: store.listMarkedForDeletion
+                    listMarkedForDeletion: store.listMarkedForDeletion,
+                    canUndo: tps.hasTransactionToUndo(),
+                    canRedo: tps.hasTransactionToRedo(),
                 });
             }
             case GlobalStoreActionType.DELETE_MARKED_LIST: {
@@ -139,7 +158,9 @@ export const useGlobalStore = () => {
                     newListCounter: store.newListCounter,
                     isListNameEditActive: false,
                     isItemEditActive: false,
-                    listMarkedForDeletion: null
+                    listMarkedForDeletion: null,
+                    canUndo: tps.hasTransactionToUndo(),
+                    canRedo: tps.hasTransactionToRedo(),
                 });
             }
             default:
@@ -185,10 +206,14 @@ export const useGlobalStore = () => {
 
     // THIS FUNCTION PROCESSES CLOSING THE CURRENTLY LOADED LIST
     store.closeCurrentList = function () {
-        storeReducer({
-            type: GlobalStoreActionType.CLOSE_CURRENT_LIST,
-            payload: {}
-        });
+        
+        if(!store.isItemEditActive){
+            storeReducer({
+                type: GlobalStoreActionType.CLOSE_CURRENT_LIST,
+                payload: {}
+            });
+            tps.clearAllTransactions();
+        }
     }
 
     // THIS FUNCTION LOADS ALL THE ID, NAME PAIRS SO WE CAN LIST ALL THE LISTS
@@ -249,6 +274,7 @@ export const useGlobalStore = () => {
             }
         }
         asyncDeleteList(temp);
+
     }
     store.addNewList = function () {
         if (store.currentList === null) {
@@ -340,9 +366,11 @@ export const useGlobalStore = () => {
 
     store.undo = function () {
         tps.undoTransaction();
+        
     }
     store.redo = function () {
         tps.doTransaction();
+        
     }
 
     // THIS FUNCTION ENABLES THE PROCESS OF EDITING A LIST NAME

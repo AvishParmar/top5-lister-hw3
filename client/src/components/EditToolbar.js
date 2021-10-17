@@ -13,40 +13,54 @@ function EditToolbar() {
 
     let enabledButtonClass = "top5-button";
     function handleUndo() {
-        store.undo();
+        if(!editStatus){
+            store.undo();
+        }
+        
     }
     function handleRedo() {
-        store.redo();
+        if(!editStatus){
+            store.redo();
+        }
     }
     function handleClose() {
-        history.push("/");
-        store.closeCurrentList();
+        if(!editStatus){
+            history.push("/");
+            store.closeCurrentList();
+        } 
     }
     let editStatus = false;
-    if (store.isListNameEditActive) {
+    if (store.isListNameEditActive || store.isItemEditActive) {
         editStatus = true;
     }
+    
     return (
         <div id="edit-toolbar">
             <div
                 disabled={editStatus}
                 id='undo-button'
                 onClick={handleUndo}
-                className={enabledButtonClass}>
+                className={enabledButtonClass}
+                style={(store.canUndo && !editStatus) ? {} : {opacity: 0.5, cursor: "not-allowed"}}
+                >
                 &#x21B6;
             </div>
             <div
                 disabled={editStatus}
                 id='redo-button'
                 onClick={handleRedo}
-                className={enabledButtonClass}>
+                className={enabledButtonClass}
+                style={(store.canRedo && !editStatus) ? {} : {opacity: 0.5, cursor: "not-allowed"}}
+                >
                 &#x21B7;
             </div>
             <div
                 disabled={editStatus}
                 id='close-button'
                 onClick={handleClose}
-                className={enabledButtonClass}>
+                className={enabledButtonClass}
+                style={(store.currentList === null || editStatus) ? {opacity: 0.5, cursor: "not-allowed"} : {}}
+                >
                 &#x24E7;
             </div>
         </div>
