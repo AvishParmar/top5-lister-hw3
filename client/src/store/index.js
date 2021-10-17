@@ -20,6 +20,7 @@ export const GlobalStoreActionType = {
     SET_CURRENT_LIST: "SET_CURRENT_LIST",
     SET_LIST_NAME_EDIT_ACTIVE: "SET_LIST_NAME_EDIT_ACTIVE",
     SET_LIST_FOR_DELETION: "SET_LIST_FOR_DELETION",
+    SET_ITEM_EDIT_ACTIVE: "SET_ITEM_EDIT_ACTIVE",
     ADD_NEW_LIST: "ADD_NEW_LIST",
     DELETE_MARKED_LIST: "DELETE_MARKED_LIST",
 }
@@ -42,6 +43,12 @@ export const useGlobalStore = () => {
         canRedo: tps.hasTransactionToRedo(),
     });
 
+    // const toggleEdit = (value) => {edit = value}
+
+    // return(
+    //     < Child  toggleEdit={toggleEdit} activeIndex={store.activeIndex} />
+    // )
+
     // HERE'S THE DATA STORE'S REDUCER, IT MUST
     // HANDLE EVERY TYPE OF STATE CHANGE
     const storeReducer = (action) => {
@@ -51,10 +58,10 @@ export const useGlobalStore = () => {
             case GlobalStoreActionType.CHANGE_LIST_NAME: {
                 return setStore({
                     idNamePairs: payload.idNamePairs,
-                    currentList: payload.top5List,
+                    currentList: null,
                     newListCounter: store.newListCounter,
-                    isListNameEditActive: false,
-                    isItemEditActive: false,
+                    isListNameEditActive: "-1",
+                    isItemEditActive: -1,
                     listMarkedForDeletion: store.listMarkedForDeletion,
                     canUndo: tps.hasTransactionToUndo(),
                     canRedo: tps.hasTransactionToRedo(),
@@ -67,8 +74,8 @@ export const useGlobalStore = () => {
                     idNamePairs: store.idNamePairs,
                     currentList: null,
                     newListCounter: store.newListCounter,
-                    isListNameEditActive: false,
-                    isItemEditActive: false,
+                    isListNameEditActive: "-1",
+                    isItemEditActive: -1,
                     listMarkedForDeletion: store.listMarkedForDeletion,
                     canUndo: tps.hasTransactionToUndo(),
                     canRedo: tps.hasTransactionToRedo(),
@@ -80,8 +87,8 @@ export const useGlobalStore = () => {
                     idNamePairs: payload,
                     currentList: null,
                     newListCounter: store.newListCounter,
-                    isListNameEditActive: false,
-                    isItemEditActive: false,
+                    isListNameEditActive: "-1",
+                    isItemEditActive: -1,
                     listMarkedForDeletion: store.listMarkedForDeletion,
                     canUndo: tps.hasTransactionToUndo(),
                     canRedo: tps.hasTransactionToRedo(),
@@ -93,8 +100,8 @@ export const useGlobalStore = () => {
                     idNamePairs: store.idNamePairs,
                     currentList: payload,
                     newListCounter: store.newListCounter,
-                    isListNameEditActive: false,
-                    isItemEditActive: false,
+                    isListNameEditActive: "-1",
+                    isItemEditActive: -1,
                     listMarkedForDeletion: store.listMarkedForDeletion,
                     canUndo: tps.hasTransactionToUndo(),
                     canRedo: tps.hasTransactionToRedo(),
@@ -104,10 +111,10 @@ export const useGlobalStore = () => {
             case GlobalStoreActionType.SET_LIST_NAME_EDIT_ACTIVE: {
                 return setStore({
                     idNamePairs: store.idNamePairs,
-                    currentList: payload,
+                    currentList: payload.currentList,
                     newListCounter: store.newListCounter,
-                    isListNameEditActive: true,
-                    isItemEditActive: false,
+                    isListNameEditActive: payload._id,
+                    isItemEditActive: -1,
                     listMarkedForDeletion: store.listMarkedForDeletion,
                     canUndo: tps.hasTransactionToUndo(),
                     canRedo: tps.hasTransactionToRedo(),
@@ -116,24 +123,23 @@ export const useGlobalStore = () => {
             case GlobalStoreActionType.SET_ITEM_EDIT_ACTIVE: {
                 return setStore({
                     idNamePairs: store.idNamePairs,
-                    currentList: payload,
+                    currentList: payload.currentList,
                     newListCounter: store.newListCounter,
-                    isListNameEditActive: false,
-                    isItemEditActive: true,
+                    isListNameEditActive: "-1",
+                    isItemEditActive: payload.index,
                     listMarkedForDeletion: store.listMarkedForDeletion,
                     canUndo: tps.hasTransactionToUndo(),
                     canRedo: tps.hasTransactionToRedo(),
                 });
             }
-
             case GlobalStoreActionType.SET_LIST_FOR_DELETION: {
                 
                 return setStore({
                     idNamePairs: store.idNamePairs,
                     currentList: null,
                     newListCounter: store.newListCounter,
-                    isListNameEditActive: false,
-                    isItemEditActive: false,
+                    isListNameEditActive: "-1",
+                    isItemEditActive: -1,
                     listMarkedForDeletion: payload,
                     canUndo: tps.hasTransactionToUndo(),
                     canRedo: tps.hasTransactionToRedo(),
@@ -144,8 +150,8 @@ export const useGlobalStore = () => {
                     idNamePairs: store.idNamePairs,
                     currentList: payload.newList,
                     newListCounter: payload.newKey,
-                    isListNameEditActive: true,
-                    isItemEditActive: false,
+                    isListNameEditActive: payload.newList._id,
+                    isItemEditActive: -1,
                     listMarkedForDeletion: store.listMarkedForDeletion,
                     canUndo: tps.hasTransactionToUndo(),
                     canRedo: tps.hasTransactionToRedo(),
@@ -156,8 +162,8 @@ export const useGlobalStore = () => {
                     idNamePairs: payload,
                     currentList: null,
                     newListCounter: store.newListCounter,
-                    isListNameEditActive: false,
-                    isItemEditActive: false,
+                    isListNameEditActive: "-1",
+                    isItemEditActive: -1,
                     listMarkedForDeletion: null,
                     canUndo: tps.hasTransactionToUndo(),
                     canRedo: tps.hasTransactionToRedo(),
@@ -206,14 +212,14 @@ export const useGlobalStore = () => {
 
     // THIS FUNCTION PROCESSES CLOSING THE CURRENTLY LOADED LIST
     store.closeCurrentList = function () {
-        
-        if(!store.isItemEditActive){
+       
+        if(store.isItemEditActive === -1){
             storeReducer({
                 type: GlobalStoreActionType.CLOSE_CURRENT_LIST,
                 payload: {}
-            });
-            tps.clearAllTransactions();
+            });   
         }
+        tps.clearAllTransactions();
     }
 
     // THIS FUNCTION LOADS ALL THE ID, NAME PAIRS SO WE CAN LIST ALL THE LISTS
@@ -277,6 +283,7 @@ export const useGlobalStore = () => {
 
     }
     store.addNewList = function () {
+        console.log("In Add")
         if (store.currentList === null) {
             let newKey = store.newListCounter;
             store.newListCounter = newKey+1;
@@ -302,7 +309,7 @@ export const useGlobalStore = () => {
                         type: GlobalStoreActionType.ADD_NEW_LIST,
                         payload: {
                             newList,
-                            newKey
+                            newKey,
                         }
                     });
                     store.setCurrentList(top5List._id);
@@ -320,6 +327,7 @@ export const useGlobalStore = () => {
     store.addChangeItemTransaction = function(index, oldName, newName) {
         let transaction = new ChangeItem_Transaction(store, index, oldName, newName);
         tps.addTransaction(transaction);
+    
     }
 
     store.moveItem = function (start, end) {
@@ -348,9 +356,9 @@ export const useGlobalStore = () => {
         store.currentList.items[index] = newName;
         // let transaction = new ChangeItem_Transaction(store, index, oldName, newName);
         // tps.addTransaction(transaction);
-        
         store.updateCurrentList();
     }
+    
     store.updateCurrentList = function () {
         async function asyncUpdateCurrentList() {
             const response = await api.updateTop5ListById(store.currentList._id, store.currentList);
@@ -365,27 +373,33 @@ export const useGlobalStore = () => {
     }
 
     store.undo = function () {
-        tps.undoTransaction();
-        
+        tps.undoTransaction(); 
     }
-    store.redo = function () {
-        tps.doTransaction();
-        
+
+    store.redo = function () {     
+        tps.doTransaction(); 
     }
 
     // THIS FUNCTION ENABLES THE PROCESS OF EDITING A LIST NAME
-    store.setIsListNameEditActive = function () {
+    store.setIsListNameEditActive = function (id) {
         storeReducer({
             type: GlobalStoreActionType.SET_LIST_NAME_EDIT_ACTIVE,
-            payload: store.currentList
+            payload: {
+                currentList: store.currentList,
+                _id: id 
+            } 
+           
         });
     }
 
     // THIS FUNCTION ENABLES THE PROCESS OF EDITING A ITEM
-    store.setIsItemEditActive = function () {
+    store.setIsItemEditActive = function (index) {
         storeReducer({
             type: GlobalStoreActionType.SET_ITEM_EDIT_ACTIVE,
-            payload: store.currentList
+            payload: {
+                currentList: store.currentList,
+                index: index
+            }
         });
     }
 

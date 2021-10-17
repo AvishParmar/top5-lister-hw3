@@ -41,11 +41,15 @@ function ListCard(props) {
     }
 
     function toggleEdit() {
-        let newActive = !editActive;
-        if (newActive) {
-            store.setIsListNameEditActive();
+        let active = (store.isListNameEditActive === props.idNamePair._id);
+        if (active) {
+            store.setIsListNameEditActive("-1");
+            setEditActive(false);
         }
-        setEditActive(newActive);
+        else{
+            store.setIsListNameEditActive(props.idNamePair._id);
+            setEditActive(true);
+        }
     }
 
     function handleKeyPress(event) {
@@ -64,10 +68,10 @@ function ListCard(props) {
     if (selected) {
         selectClass = "selected-list-card";
     }
-    let cardStatus = false;
-    if (store.isListNameEditActive) {
-        cardStatus = true;
-    }
+    // let cardStatus = false;
+    // if (store.isListNameEditActive) {
+    //     cardStatus = true;
+    // }
     let cardElement =
         <div
             id={idNamePair._id}
@@ -81,7 +85,7 @@ function ListCard(props) {
                 {idNamePair.name}
             </span>
             <input
-                disabled={cardStatus}
+                disabled={editActive}
                 type="button"
                 id={"delete-list-" + idNamePair._id}
                 onClick={handleDeleteList}
@@ -89,7 +93,7 @@ function ListCard(props) {
                 value={"\u2715"}
             />
             <input
-                disabled={cardStatus}
+                disabled={editActive}
                 type="button"
                 id={"edit-list-" + idNamePair._id}
                 className="list-card-button"

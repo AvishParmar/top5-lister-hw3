@@ -30,7 +30,7 @@ function EditToolbar() {
         } 
     }
     let editStatus = false;
-    if (store.isListNameEditActive || store.isItemEditActive) {
+    if ((store.isListNameEditActive !== "-1") || (store.isItemEditActive !== -1)) {
         editStatus = true;
     }
     

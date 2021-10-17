@@ -9,7 +9,7 @@ const Schema = mongoose.Schema
 const top5ListSchema = new Schema(
     {
         name: { type: String, required: true },
-        items: { type: [String], required: true }
+        items: { type: [String], required: true },
     },
     { timestamps: true },
 )
