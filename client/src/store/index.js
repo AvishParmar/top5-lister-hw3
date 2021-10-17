@@ -272,7 +272,7 @@ export const useGlobalStore = () => {
             let response = await api.deleteTop5ListById(temp._id);
             if(response.data.success){
                 
-                const newIdNamePairs = store.idNamePairs.filter(idNamePair => idNamePair != temp);
+                const newIdNamePairs = store.idNamePairs.filter(idNamePair => idNamePair !== temp);
                 storeReducer({
                     type: GlobalStoreActionType.DELETE_MARKED_LIST,
                     payload: newIdNamePairs

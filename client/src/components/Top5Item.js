@@ -8,7 +8,7 @@ import { GlobalStoreContext } from '../store'
 */
 function Top5Item(props) {
     const { store } = useContext(GlobalStoreContext);
-    const [ editActive, setEditActive ] = useState(store.isItemEditActive == props.index);
+    const [ editActive, setEditActive ] = useState(store.isItemEditActive === props.index);
     const [ text, setText ] = useState(props.text);
     const [draggedTo, setDraggedTo] = useState(0);
 
@@ -84,6 +84,9 @@ function Top5Item(props) {
     }
 
     let { index } = props;
+    console.log(props.index)
+    console.log("ITEM EDIT: "+store.isItemEditActive)
+    console.log(props.index === store.isItemEditActive)
     let itemClass = "top5-item";
     
     if (draggedTo) {
@@ -105,16 +108,18 @@ function Top5Item(props) {
             draggable="true"
         >
             <input
-                disabled={editActive}
+                disabled={!(store.isItemEditActive === props.index) && (store.isItemEditActive !== -1)}
                 type="button"
                 id={"edit-item-" + index + 1}
                 className="list-card-button"
                 onClick={handleToggleEdit}
+                // style={d ? {opacity: 0.5} : {}}
                 value={"\u270E"}
             />
             {props.text}
         </div>;
     if (editActive) {
+        
         itemElement =
             <input
                 id={"item-" + (index + 1)}

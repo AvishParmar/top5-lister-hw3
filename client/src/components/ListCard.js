@@ -85,7 +85,7 @@ function ListCard(props) {
                 {idNamePair.name}
             </span>
             <input
-                disabled={editActive}
+                disabled={!(store.isListNameEditActive === props.idNamePair._id) && (store.isListNameEditActive !== "-1")}
                 type="button"
                 id={"delete-list-" + idNamePair._id}
                 onClick={handleDeleteList}
@@ -93,7 +93,7 @@ function ListCard(props) {
                 value={"\u2715"}
             />
             <input
-                disabled={editActive}
+                disabled={!(store.isListNameEditActive === props.idNamePair._id) && (store.isListNameEditActive !== "-1")}
                 type="button"
                 id={"edit-list-" + idNamePair._id}
                 className="list-card-button"
