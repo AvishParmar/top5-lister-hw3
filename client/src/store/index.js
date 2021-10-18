@@ -36,8 +36,8 @@ export const useGlobalStore = () => {
         idNamePairs: [],
         currentList: null,
         newListCounter: 0,
-        listNameActive: false,
-        itemActive: false,
+        listNameActive: "-1",
+        itemActive: -1,
         listMarkedForDeletion: null,
         canUndo: tps.hasTransactionToUndo(),
         canRedo: tps.hasTransactionToRedo(),
@@ -283,11 +283,10 @@ export const useGlobalStore = () => {
 
     }
     store.addNewList = function () {
-        console.log("In Add")
+        
         if (store.currentList === null) {
             let newKey = store.newListCounter;
             store.newListCounter = newKey+1;
-            console.log(store.newListCounter);
             let newName = "Untitled" + newKey;
             
             let newList = {

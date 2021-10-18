@@ -13,8 +13,8 @@ const ListSelector = () => {
     store.history = useHistory();
     
     function handleAdd(){
-        console.log(store.isListNameEditActive);
-        if(store.isListNameEditActive === "-1"){
+        console.log(store.isListNameEditActive === undefined);
+        if(store.isListNameEditActive === "-1" || store.isListNameEditActive === undefined){
             store.addNewList();
         }
         
@@ -41,7 +41,7 @@ const ListSelector = () => {
                     id="add-list-button"
                     className="top5-button"
                     value="+" 
-                    style={(store.isListNameEditActive !== "-1") ? {opacity: 0.5, cursor: "not-allowed"} : {}}
+                    style={(store.isListNameEditActive !== "-1" && store.isListNameEditActive !== undefined) ? {opacity: 0.5, cursor: "not-allowed"} : {}}
                     onClick={handleAdd}/>
                 Your Lists
             </div>

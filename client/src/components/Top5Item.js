@@ -1,4 +1,4 @@
-import { React, useContext, useState } from "react";
+import { React, useContext, useState, useEffect} from "react";
 import { GlobalStoreContext } from '../store'
 /*
     This React component represents a single item in our
@@ -11,6 +11,11 @@ function Top5Item(props) {
     const [ editActive, setEditActive ] = useState(store.isItemEditActive === props.index);
     const [ text, setText ] = useState(props.text);
     const [draggedTo, setDraggedTo] = useState(0);
+
+    useEffect(() => {
+        store.updateCurrentList();
+        store.setCurrentList(store.currentList._id);
+    }, []);
 
     function handleDragStart(event) {
         event.dataTransfer.setData("item", event.target.id);
@@ -38,16 +43,20 @@ function Top5Item(props) {
         let sourceId = event.dataTransfer.getData("item");
         sourceId = sourceId.substring(sourceId.indexOf("-") + 1);
         setDraggedTo(false);
-
+        // setText(store.currentList.item[targetId]);
         // UPDATE THE LIST
+        
         if(sourceId !== targetId){
             store.addMoveItemTransaction(sourceId, targetId);
+            
         }
-        
+
     }
 
     function handleToggleEdit(event) {
+
         event.stopPropagation();
+        setText(props.text);
         toggleEdit();
     }
 
@@ -56,7 +65,7 @@ function Top5Item(props) {
         const active = (store.isItemEditActive === props.index);
         // console.log("NEWACTIVE: "+newActive)
         // console.log("EDITACTIVE: "+editActive)
-        console.log(store.isItemEditActive);
+        // console.log(store.isItemEditActive);
         if (active) {
             store.setIsItemEditActive(-1);
             setEditActive(false);
@@ -65,7 +74,7 @@ function Top5Item(props) {
             store.setIsItemEditActive(props.index);
             setEditActive(true);
         }
-        console.log(store.isItemEditActive);
+        // console.log(store.isItemEditActive);
         
     }
 
@@ -84,9 +93,9 @@ function Top5Item(props) {
     }
 
     let { index } = props;
-    console.log(props.index)
-    console.log("ITEM EDIT: "+store.isItemEditActive)
-    console.log(props.index === store.isItemEditActive)
+    // console.log(props.index)
+    // console.log("ITEM EDIT: "+store.isItemEditActive)
+    // console.log(props.index === store.isItemEditActive)
     let itemClass = "top5-item";
     
     if (draggedTo) {

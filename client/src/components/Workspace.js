@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, } from 'react'
 import { useHistory } from 'react-router-dom'
 import Top5Item from './Top5Item.js'
 import { GlobalStoreContext } from '../store'
@@ -11,6 +11,8 @@ import { GlobalStoreContext } from '../store'
 function Workspace() {
     const { store } = useContext(GlobalStoreContext);
     store.history = useHistory();
+
+    
 
     let editItems = "";
     if (store.currentList) {
